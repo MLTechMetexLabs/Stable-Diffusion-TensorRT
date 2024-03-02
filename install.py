@@ -7,7 +7,6 @@ def get_installed_version(package_name):
     except pkg_resources.DistributionNotFound:
         return None
 
-
 def install_package(package_name, version_spec=None, uninstall_first=False, extra_index_url=None, no_cache_dir=False):
     package_install_cmd = f"{package_name}{'==' + version_spec if version_spec else ''}"
     if extra_index_url:
