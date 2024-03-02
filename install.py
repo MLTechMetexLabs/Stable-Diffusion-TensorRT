@@ -1,4 +1,12 @@
 import launch
+import pkg_resources
+
+def get_installed_version(package_name):
+    try:
+        return pkg_resources.get_distribution(package_name).version
+    except pkg_resources.DistributionNotFound:
+        return None
+
 
 def install_package(package_name, version_spec=None, uninstall_first=False, extra_index_url=None, no_cache_dir=False):
     package_install_cmd = f"{package_name}{'==' + version_spec if version_spec else ''}"
@@ -15,9 +23,10 @@ def install_package(package_name, version_spec=None, uninstall_first=False, extr
 
 def install():
     # TensorRT installation or upgrade
-    if not launch.is_installed("tensorrt") or launch.version("tensorrt") != "9.3.0.post12.dev1":
+    tensorrt_version = get_installed_version("tensorrt")
+    if not tensorrt_version or tensorrt_version != "9.3.0.post12.dev1":
         # nvidia-cudnn-cu11 installation
-        if launch.is_installed("nvidia-cudnn-cu11") and launch.version("nvidia-cudnn-cu11") != "8.9.6.50":
+        if launch.is_installed("nvidia-cudnn-cu11") and get_installed_version("nvidia-cudnn-cu11") != "8.9.6.50":
             install_package("nvidia-cudnn-cu11", "8.9.6.50", uninstall_first=True, no_cache_dir=True)
         install_package("tensorrt", "9.3.0.post12.dev1", uninstall_first=True, extra_index_url="https://pypi.nvidia.com", no_cache_dir=True)
 
